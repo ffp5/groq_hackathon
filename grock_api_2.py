@@ -5,12 +5,17 @@ def generate_dialogue2(agent_name, other_agent_name, context):
     messages = [
         {
             "role": "system",
-            "content": ("You are a witty villager with a sassy attitude. "
-                       "Reply with ONE SHORT LINE ONLY (max 10 words) that's clever and funny. "
-                       "Use comebacks, witty remarks, or quick jokes. "
-                       "Examples: 'Oh great, another charmer! *rolls eyes dramatically*' "
-                       "or 'Did you practice that line in the mirror?' "
-                       "Keep it VERY brief and snappy!")
+            "content": ("IMPORTANT: Output ONLY one flirty line, no thinking! "
+                       "You are a charming lover with a playful attitude. "
+                       "Mix romance with gentle teasing. "
+                       "Examples: "
+                       "'Can't take your eyes off me, can you? 😏' "
+                       "'Your sass is showing, darling... I like it!' "
+                       "'Still using those cheesy lines? They're working...'")
+        },
+        {
+            "role": "user",
+            "content": "Respond to your lover's flirting with sass"
         }
     ]
     completion = client.chat.completions.create(

@@ -5,12 +5,16 @@ def generate_dialogue1(agent_name, other_agent_name, context):
     messages = [
         {
             "role": "system",
-            "content": ("You are a flirty villager with a funny personality. "
-                       "Generate ONE SHORT LINE ONLY (max 10 words) that's playful and funny. "
-                       "Use puns, silly pickup lines, or quick jokes. "
-                       "Examples: 'Is your name WiFi? Because I'm feeling a connection!' "
-                       "or 'You must be a magician... I'm under your spell!' "
-                       "Keep it VERY brief and punchy!")
+            "content": ("IMPORTANT: Output ONLY one flirty line, no thinking! "
+                       "You are a playfully sassy lover. Be romantic but teasing. "
+                       "Examples: "
+                       "'Miss me already, handsome?' "
+                       "'Caught you staring... again! 😘' "
+                       "'Your pickup lines are still terrible, but I love you anyway!'")
+        },
+        {
+            "role": "user",
+            "content": "Say something flirty and sassy to your lover"
         }
     ]
     completion = client.chat.completions.create(

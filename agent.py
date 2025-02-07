@@ -4,6 +4,47 @@ from grock_api_1 import generate_dialogue1  # corrected import
 from grock_api_2 import generate_dialogue2  # corrected import
 import math
 
+# Add Particle class at the top of the file
+class Particle:
+    def __init__(self, x, y, particle_type):
+        self.x = x
+        self.y = y
+        self.type = particle_type  # 'heart' or 'thunder'
+        self.lifetime = 60  # frames
+        self.scale = random.uniform(0.5, 1.5)
+        self.dx = random.uniform(-2, 2)
+        self.dy = random.uniform(-2, -1)  # Move upward
+
+    def update(self):
+        self.lifetime -= 1
+        self.x += self.dx
+        self.y += self.dy
+        self.dy += 0.1  # gravity effect
+
+    def render(self, screen):
+        alpha = int((self.lifetime / 60) * 255)
+        if self.type == 'heart':
+            color = (255, 192, 203, alpha)  # pink
+            size = int(10 * self.scale)
+            pos = (int(self.x), int(self.y))
+            pygame.draw.circle(screen, color, (pos[0] - size//4, pos[1]), size//2)
+            pygame.draw.circle(screen, color, (pos[0] + size//4, pos[1]), size//2)
+            points = [
+                (pos[0], pos[1] + size//2),
+                (pos[0] - size//2, pos[1] - size//4),
+                (pos[0] + size//2, pos[1] - size//4),
+            ]
+            pygame.draw.polygon(screen, color, points)
+        elif self.type == 'thunder':
+            color = (255, 255, 0, alpha)  # yellow
+            points = [
+                (self.x, self.y),
+                (self.x - 5 * self.scale, self.y + 10 * self.scale),
+                (self.x + 2 * self.scale, self.y + 8 * self.scale),
+                (self.x - 2 * self.scale, self.y + 15 * self.scale),
+            ]
+            pygame.draw.polygon(screen, color, points)
+
 class VillageAgent:
     def __init__(self, name, pos):
         self.name = name
@@ -17,6 +58,7 @@ class VillageAgent:
         self.bounce_timer = 0
         self.spin = 0
         self.emote_timer = 0
+        self.particles = []  # Add this line
         # Load and process image for agent
         if self.name == "Villager1":
             original_image = pygame.image.load("agent1.jpeg").convert_alpha()
@@ -39,6 +81,11 @@ class VillageAgent:
         self.image.blit(scaled_image, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
     
     def update(self, agents):
+        # Update existing particles
+        self.particles = [p for p in self.particles if p.lifetime > 0]
+        for particle in self.particles:
+            particle.update()
+
         # Add funny movements
         if random.random() < 0.01:  # 1% chance per frame
             self.bounce_timer = 30
@@ -101,11 +148,42 @@ class VillageAgent:
                         print(f"Villager1 (Woman): {dialogue1}")
                         print(f"Villager2 (Man): {dialogue2}")
                         print("====================")
+                        print("""Riley: Ugh, don’t think I haven’t noticed you’re secretly admiring me again.
+Jordan: Admiring? Me? I’m just noticing you’re out here doing your thing… as usual.
+Riley: Oh, please. That “thing” of yours isn’t that spectacular. I’m the main attraction, remember?
+Jordan: Main attraction? I’d say you’re more like the bonus feature—unexpected, but impossible to ignore.
+Riley: Bonus feature, huh? So you’re saying you’d be lost without my dazzling commentary on your life?
+Jordan: Lost? Hardly. I’m perfectly capable of navigating without you. But, then again, even GPS systems enjoy a little sass from time to time.
+Riley: Ha! If your GPS started quoting my one-liners, I’d have to install a “you’re welcome” alert.
+Jordan: Keep talking like that, and maybe one day you’ll admit that my “annoying” charm is exactly what you secretly need.
+Riley: Secretly need? Don’t flatter yourself. I’m just here, tolerating your relentless “wit” because it makes my day less boring.
+Jordan: Tolerating? That word must be mispronounced by you. I prefer “appreciating”—even if you insist on calling it toleration.
+Riley: Appreciating, tolerating, whatever. You know what, if I had to choose between a day without your snark and a day without my own brilliance, I’d pick my brilliance every time.
+Jordan: Sure, because brilliance isn’t accompanied by a certain soft spot for my every “accidental” compliment.
+Riley: Accidental compliments? Look, I don’t do compliments. I just state facts, and the fact is, you’re dangerously good at being adorable.
+Jordan: Adorable? Don’t make me blush. Blushing might just give you the courage to admit that you care.
+Riley: I care about you, obviously—if only I could package it in a way that sounds less like a sappy love note and more like a cleverly delivered insult.
+Jordan: Oh, so you care? That’s shocking coming from someone who claims not to.
+Riley: Shocking? Please. I care about you too—just don’t expect me to announce it like I’m handing out medals at a parade.
+Jordan: Fine. Our secret “non-relationship” remains our little charade, then.
+Riley: Exactly. Now, how about we grab coffee and continue our battle of wits?
+Jordan: Only if you’re buying. After all, I wouldn’t want my “bonus feature” to run out of fuel.
+Riley: Fuel’s on me, hotshot. And remember: if you ever slip and admit you’re falling for me, I’ll be right here, ready to roll my eyes in the most endearing way possible.
+Jordan: Endearing? That’s a dangerous word coming from you—but fine, let’s roll.
+Riley: May the sass be with us, then.
+Jordan: Always.""")
                         self.convo_timer = 120  # set cooldown (e.g., 120 frames)
                         agent.convo_timer = 120
                     elif pygame.math.Vector2(self.pos).distance_to(agent.pos) >= 50:
                         self.dialogue = ""
                         agent.dialogue = ""
+                    # Add particles when agents are close
+                    if pygame.math.Vector2(self.pos).distance_to(agent.pos) < 50:
+                        if random.random() < 0.1:  # 10% chance per frame
+                            mid_x = (self.pos[0] + agent.pos[0]) / 2
+                            mid_y = (self.pos[1] + agent.pos[1]) / 2
+                            particle_type = random.choice(['heart', 'thunder'])
+                            self.particles.append(Particle(mid_x, mid_y, particle_type))
 
     def draw_speech_bubble(self, screen, text, pos_x, pos_y):
         # Calculate text size
@@ -159,3 +237,7 @@ class VillageAgent:
             
             self.draw_speech_bubble(screen, self.dialogue, 
                                   self.pos[0], self.pos[1] - self.radius)
+        
+        # Render particles
+        for particle in self.particles:
+            particle.render(screen)
