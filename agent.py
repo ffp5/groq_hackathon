@@ -3,6 +3,8 @@ import random
 from grock_api_1 import generate_dialogue1  # corrected import
 from grock_api_2 import generate_dialogue2  # corrected import
 import math
+import time
+from statistics import mean
 
 # Add Particle class at the top of the file
 class Particle:
@@ -49,16 +51,23 @@ class VillageAgent:
     def __init__(self, name, pos):
         self.name = name
         self.pos = list(pos)
-        self.radius = 32  # increased from 16 to 32
+        self.radius = 48  # Increased from 32 to 48 for bigger agents
         self.color = (255, 255, 255)
         self.dialogue = ""
-        self.font = pygame.font.SysFont("Comic Sans MS", 14)  # Changed font to be more comic-like
+        self.font = pygame.font.SysFont("Comic Sans MS", 20)  # Bigger font
         self.vel = [random.uniform(-1, 1), random.uniform(-1, 1)]  # new velocity attribute
         self.convo_timer = 0  # new conversation cooldown in frames
         self.bounce_timer = 0
         self.spin = 0
         self.emote_timer = 0
         self.particles = []  # Add this line
+        self.metrics = {
+            "response_times": [],
+            "interaction_count": 0,
+            "avg_distance": [],
+            "mood": "neutral"
+        }
+        self.debug_info = True  # Toggle for technical overlay
         # Load and process image for agent
         if self.name == "Villager1":
             original_image = pygame.image.load("agent1.jpeg").convert_alpha()
@@ -81,6 +90,7 @@ class VillageAgent:
         self.image.blit(scaled_image, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
     
     def update(self, agents):
+        start_time = time.time()
         # Update existing particles
         self.particles = [p for p in self.particles if p.lifetime > 0]
         for particle in self.particles:
@@ -108,9 +118,9 @@ class VillageAgent:
         self.pos[0] += self.vel[0]
         self.pos[1] += self.vel[1]
         # boundary checking for a 640x480 window
-        if self.pos[0] < 0 or self.pos[0] > 640:
+        if self.pos[0] < 0 or self.pos[0] > 1024:
             self.vel[0] *= -1
-        if self.pos[1] < 0 or self.pos[1] > 480:
+        if self.pos[1] < 0 or self.pos[1] > 768:
             self.vel[1] *= -1
         
         # Apply seeking behavior towards the other agent
@@ -138,7 +148,12 @@ class VillageAgent:
         if self.name == "Villager1":
             for agent in agents:
                 if agent.name == "Villager2":
-                    if pygame.math.Vector2(self.pos).distance_to(agent.pos) < 50 and self.convo_timer == 0:
+                    distance = pygame.math.Vector2(self.pos).distance_to(agent.pos)
+                    self.metrics["avg_distance"].append(distance)
+                    if distance < 50 and self.convo_timer == 0:
+                        self.metrics["interaction_count"] += 1
+                        response_time = time.time() - start_time
+                        self.metrics["response_times"].append(response_time)
                         dialogue1 = generate_dialogue1("Villager1", "Villager2", "")
                         dialogue2 = generate_dialogue2("Villager2", "Villager1", "")
                         self.dialogue = dialogue1
@@ -241,3 +256,25 @@ Jordan: Always.""")
         # Render particles
         for particle in self.particles:
             particle.render(screen)
+        
+        # Add technical overlay
+        if self.debug_info:
+            metrics_font = pygame.font.SysFont("Courier", 14)
+            y_offset = 10
+            metrics_text = [
+                f"Agent: {self.name}",
+                f"Interactions: {self.metrics['interaction_count']}",
+                f"Avg Response: {mean(self.metrics['response_times']) if self.metrics['response_times'] else 0:.3f}s",
+                f"Avg Distance: {mean(self.metrics['avg_distance']) if self.metrics['avg_distance'] else 0:.1f}px",
+                f"FPS: {int(clock.get_fps())}"
+            ]
+            
+            for text in metrics_text:
+                surface = metrics_font.render(text, True, (255, 255, 0))
+                screen.blit(surface, (10, y_offset))
+                y_offset += 20
+                
+            # Draw interaction radius
+            pygame.draw.circle(screen, (255, 0, 0), 
+                             (int(self.pos[0]), int(self.pos[1])), 
+                             50, 1)  # interaction radius visualization

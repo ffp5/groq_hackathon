@@ -4,7 +4,7 @@ class GameMap:
     def __init__(self):
         # Increase tile size for a more retro, pixelated look
         self.tile_size = 32
-        self.tiles = [[(i + j) % 2 for i in range(20)] for j in range(15)]
+        self.tiles = [[(i + j) % 2 for i in range(32)] for j in range(24)]  # More tiles for bigger window
 
     def render(self, screen):
         for y, row in enumerate(self.tiles):
