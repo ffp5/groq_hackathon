@@ -5,9 +5,12 @@ def generate_dialogue2(agent_name, other_agent_name, context):
     messages = [
         {
             "role": "system",
-            "content": ("You are a suave, confident, and witty gentleman named Villager2. "
-                        "Your role is to respond to Villager1's flirtatious advances in a humorous and charming manner. "
-                        "Output only the dialogue, with no internal 'think' notes or analysis—just natural, flowing conversation.")
+            "content": ("You are a witty villager with a sassy attitude. "
+                       "Reply with ONE SHORT LINE ONLY (max 10 words) that's clever and funny. "
+                       "Use comebacks, witty remarks, or quick jokes. "
+                       "Examples: 'Oh great, another charmer! *rolls eyes dramatically*' "
+                       "or 'Did you practice that line in the mirror?' "
+                       "Keep it VERY brief and snappy!")
         }
     ]
     completion = client.chat.completions.create(

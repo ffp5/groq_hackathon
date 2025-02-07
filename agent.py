@@ -2,6 +2,7 @@ import pygame
 import random
 from grock_api_1 import generate_dialogue1  # corrected import
 from grock_api_2 import generate_dialogue2  # corrected import
+import math
 
 class VillageAgent:
     def __init__(self, name, pos):
@@ -10,9 +11,12 @@ class VillageAgent:
         self.radius = 32  # increased from 16 to 32
         self.color = (255, 255, 255)
         self.dialogue = ""
-        self.font = pygame.font.SysFont("Arial", 12)
+        self.font = pygame.font.SysFont("Comic Sans MS", 14)  # Changed font to be more comic-like
         self.vel = [random.uniform(-1, 1), random.uniform(-1, 1)]  # new velocity attribute
         self.convo_timer = 0  # new conversation cooldown in frames
+        self.bounce_timer = 0
+        self.spin = 0
+        self.emote_timer = 0
         # Load and process image for agent
         if self.name == "Villager1":
             original_image = pygame.image.load("agent1.jpeg").convert_alpha()
@@ -35,6 +39,15 @@ class VillageAgent:
         self.image.blit(scaled_image, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
     
     def update(self, agents):
+        # Add funny movements
+        if random.random() < 0.01:  # 1% chance per frame
+            self.bounce_timer = 30
+            self.spin = random.choice([-10, 10])
+        
+        if self.bounce_timer > 0:
+            self.bounce_timer -= 1
+            self.pos[1] += math.sin(self.bounce_timer * 0.2) * 2
+
         # Natural movement: update velocity with slight random acceleration
         
         self.vel[0] += random.uniform(-0.1, 0.1)
@@ -94,12 +107,55 @@ class VillageAgent:
                         self.dialogue = ""
                         agent.dialogue = ""
 
+    def draw_speech_bubble(self, screen, text, pos_x, pos_y):
+        # Calculate text size
+        text_surface = self.font.render(text, True, (0, 0, 0))
+        text_width = text_surface.get_width()
+        text_height = text_surface.get_height()
+        
+        # Bubble parameters
+        padding = 10
+        bubble_width = text_width + padding * 2
+        bubble_height = text_height + padding * 2
+        
+        # Draw white bubble background
+        bubble_rect = pygame.Rect(pos_x - bubble_width//2, pos_y - bubble_height - 20, 
+                                bubble_width, bubble_height)
+        pygame.draw.ellipse(screen, (255, 255, 255), bubble_rect)
+        pygame.draw.ellipse(screen, (0, 0, 0), bubble_rect, 2)  # Black outline
+        
+        # Draw tail of bubble
+        points = [
+            (pos_x, pos_y - 20),  # Point towards the speaker
+            (pos_x - 10, pos_y - 30),
+            (pos_x + 10, pos_y - 30)
+        ]
+        pygame.draw.polygon(screen, (255, 255, 255), points)
+        pygame.draw.polygon(screen, (0, 0, 0), points, 2)
+        
+        # Draw text
+        screen.blit(text_surface, 
+                   (pos_x - text_width//2, 
+                    pos_y - bubble_height - 20 + padding))
+
     def render(self, screen):
         # Draw the agent using its circular image if available
         if self.image:
-            screen.blit(self.image, (self.pos[0] - self.radius, self.pos[1] - self.radius))
+            if self.bounce_timer > 0:
+                # Rotate image when bouncing
+                rotated = pygame.transform.rotate(self.image, self.spin * (self.bounce_timer/30))
+                screen.blit(rotated, (self.pos[0] - self.radius, self.pos[1] - self.radius))
+            else:
+                screen.blit(self.image, (self.pos[0] - self.radius, self.pos[1] - self.radius))
         else:
             pygame.draw.circle(screen, self.color, self.pos, self.radius)
+
+        # Draw speech bubble if there's dialogue
         if self.dialogue:
-            text_surface = self.font.render(self.dialogue, True, (255, 255, 0))
-            screen.blit(text_surface, (self.pos[0] - 20, self.pos[1] - 30))
+            # Add emojis to dialogue randomly
+            emojis = ["😄", "❤️", "✨", "🌟", "😎"]
+            if random.random() < 0.1:  # 10% chance per frame
+                self.dialogue += f" {random.choice(emojis)}"
+            
+            self.draw_speech_bubble(screen, self.dialogue, 
+                                  self.pos[0], self.pos[1] - self.radius)
