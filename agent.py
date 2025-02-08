@@ -163,30 +163,30 @@ class VillageAgent:
                         print(f"Villager1 (Woman): {dialogue1}")
                         print(f"Villager2 (Man): {dialogue2}")
                         print("====================")
-                        print("""Riley: Ugh, don’t think I haven’t noticed you’re secretly admiring me again.
-Jordan: Admiring? Me? I’m just noticing you’re out here doing your thing… as usual.
-Riley: Oh, please. That “thing” of yours isn’t that spectacular. I’m the main attraction, remember?
-Jordan: Main attraction? I’d say you’re more like the bonus feature—unexpected, but impossible to ignore.
-Riley: Bonus feature, huh? So you’re saying you’d be lost without my dazzling commentary on your life?
-Jordan: Lost? Hardly. I’m perfectly capable of navigating without you. But, then again, even GPS systems enjoy a little sass from time to time.
-Riley: Ha! If your GPS started quoting my one-liners, I’d have to install a “you’re welcome” alert.
-Jordan: Keep talking like that, and maybe one day you’ll admit that my “annoying” charm is exactly what you secretly need.
-Riley: Secretly need? Don’t flatter yourself. I’m just here, tolerating your relentless “wit” because it makes my day less boring.
-Jordan: Tolerating? That word must be mispronounced by you. I prefer “appreciating”—even if you insist on calling it toleration.
-Riley: Appreciating, tolerating, whatever. You know what, if I had to choose between a day without your snark and a day without my own brilliance, I’d pick my brilliance every time.
-Jordan: Sure, because brilliance isn’t accompanied by a certain soft spot for my every “accidental” compliment.
-Riley: Accidental compliments? Look, I don’t do compliments. I just state facts, and the fact is, you’re dangerously good at being adorable.
-Jordan: Adorable? Don’t make me blush. Blushing might just give you the courage to admit that you care.
-Riley: I care about you, obviously—if only I could package it in a way that sounds less like a sappy love note and more like a cleverly delivered insult.
-Jordan: Oh, so you care? That’s shocking coming from someone who claims not to.
-Riley: Shocking? Please. I care about you too—just don’t expect me to announce it like I’m handing out medals at a parade.
-Jordan: Fine. Our secret “non-relationship” remains our little charade, then.
-Riley: Exactly. Now, how about we grab coffee and continue our battle of wits?
-Jordan: Only if you’re buying. After all, I wouldn’t want my “bonus feature” to run out of fuel.
-Riley: Fuel’s on me, hotshot. And remember: if you ever slip and admit you’re falling for me, I’ll be right here, ready to roll my eyes in the most endearing way possible.
-Jordan: Endearing? That’s a dangerous word coming from you—but fine, let’s roll.
-Riley: May the sass be with us, then.
-Jordan: Always.""")
+                        print("""Math: Ugh, don’t think I haven’t noticed you’re secretly admiring me again.
+Sam: Admiring? Me? I’m just noticing you’re out here doing your thing… as usual.
+Math: Oh, please. That “thing” of yours isn’t that spectacular. I’m the main attraction, remember?
+Sam: Main attraction? I’d say you’re more like the bonus feature—unexpected, but impossible to ignore.
+Math: Bonus feature, huh? So you’re saying you’d be lost without my dazzling commentary on your life?
+Sam: Lost? Hardly. I’m perfectly capable of navigating without you. But, then again, even GPS systems enjoy a little sass from time to time.
+Math: Ha! If your GPS started quoting my one-liners, I’d have to install a “you’re welcome” alert.
+Sam: Keep talking like that, and maybe one day you’ll admit that my “annoying” charm is exactly what you secretly need.
+Math: Secretly need? Don’t flatter yourself. I’m just here, tolerating your relentless “wit” because it makes my day less boring.
+Sam: Tolerating? That word must be mispronounced by you. I prefer “appreciating”—even if you insist on calling it toleration.
+Math: Appreciating, tolerating, whatever. You know what, if I had to choose between a day without your snark and a day without my own brilliance, I’d pick my brilliance every time.
+Sam: Sure, because brilliance isn’t accompanied by a certain soft spot for my every “accidental” compliment.
+Math: Accidental compliments? Look, I don’t do compliments. I just state facts, and the fact is, you’re dangerously good at being adorable.
+Sam: Adorable? Don’t make me blush. Blushing might just give you the courage to admit that you care.
+Math: I care about you, obviously—if only I could package it in a way that sounds less like a sappy love note and more like a cleverly delivered insult.
+Sam: Oh, so you care? That’s shocking coming from someone who claims not to.
+Math: Shocking? Please. I care about you too—just don’t expect me to announce it like I’m handing out medals at a parade.
+Sam: Fine. Our secret “non-relationship” remains our little charade, then.
+Math: Exactly. Now, how about we grab coffee and continue our battle of wits?
+Sam: Only if you’re buying. After all, I wouldn’t want my “bonus feature” to run out of fuel.
+Math: Fuel’s on me, hotshot. And remember: if you ever slip and admit you’re falling for me, I’ll be right here, ready to roll my eyes in the most endearing way possible.
+Sam: Endearing? That’s a dangerous word coming from you—but fine, let’s roll.
+Math: May the sass be with us, then.
+Sam: Always.""")
                         self.convo_timer = 120  # set cooldown (e.g., 120 frames)
                         agent.convo_timer = 120
                     elif pygame.math.Vector2(self.pos).distance_to(agent.pos) >= 50:
